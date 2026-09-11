@@ -183,6 +183,12 @@ app.get("/tasks", (req, res) => {
   const requestedLimit = Number(req.query.limit) || 10;
   const limit = Math.min(requestedLimit, MAX_PAGE_LIMIT);
 
+  if (!Number.isInteger(page) || page < 1) {
+    return res.status(400).json({
+      message: "Page must be a positive integer"
+    });
+  }
+
   let result = [...tasks];
 
   if (search) {
