@@ -28,6 +28,8 @@ app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
   const sort = req.query.sort;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
 
   let result = [...tasks];
 
@@ -53,7 +55,17 @@ app.get("/tasks", (req, res) => {
     result.sort((a, b) => a.id - b.id);
   }
 
-  res.json(result);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+
+  const paginatedTasks = result.slice(startIndex, endIndex);
+
+  res.json({
+    page,
+    limit,
+    total: result.length,
+    tasks: paginatedTasks
+  });
 });
 
 app.get("/tasks/:id", (req, res) => {
