@@ -6,6 +6,7 @@ const PORT = 3000;
 app.use(express.json());
 
 const allowedPriorities = ["low", "medium", "high"];
+
 const priorityOrder = {
   high: 1,
   medium: 2,
@@ -61,6 +62,7 @@ app.delete("/tasks/completed/all", (req, res) => {
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
+  const completed = req.query.completed;
   const sort = req.query.sort;
   const priority = req.query.priority;
   const page = Number(req.query.page) || 1;
@@ -79,6 +81,14 @@ app.get("/tasks", (req, res) => {
   }
 
   if (status === "pending") {
+    result = result.filter((task) => task.completed === false);
+  }
+
+  if (completed === "true") {
+    result = result.filter((task) => task.completed === true);
+  }
+
+  if (completed === "false") {
     result = result.filter((task) => task.completed === false);
   }
 
