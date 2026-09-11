@@ -25,6 +25,16 @@ app.get("/", (req, res) => {
 });
 
 app.get("/tasks", (req, res) => {
+  const search = req.query.search;
+
+  if (search) {
+    const filteredTasks = tasks.filter((task) =>
+      task.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    return res.json(filteredTasks);
+  }
+
   res.json(tasks);
 });
 
