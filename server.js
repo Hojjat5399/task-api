@@ -9,12 +9,14 @@ let tasks = [
   {
     id: 1,
     title: "Learn Node.js",
-    completed: false
+    completed: false,
+    priority: "high"
   },
   {
     id: 2,
     title: "Build an API",
-    completed: false
+    completed: false,
+    priority: "medium"
   }
 ];
 
@@ -51,6 +53,7 @@ app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
   const sort = req.query.sort;
+  const priority = req.query.priority;
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
 
@@ -68,6 +71,10 @@ app.get("/tasks", (req, res) => {
 
   if (status === "pending") {
     result = result.filter((task) => task.completed === false);
+  }
+
+  if (priority) {
+    result = result.filter((task) => task.priority === priority);
   }
 
   if (sort === "title") {
@@ -106,7 +113,7 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 app.post("/tasks", (req, res) => {
-  const { title } = req.body;
+  const { title, priority } = req.body;
 
   if (!title) {
     return res.status(400).json({
@@ -117,7 +124,8 @@ app.post("/tasks", (req, res) => {
   const newTask = {
     id: tasks.length + 1,
     title,
-    completed: false
+    completed: false,
+    priority: priority || "medium"
   };
 
   tasks.push(newTask);
@@ -127,7 +135,7 @@ app.post("/tasks", (req, res) => {
 
 app.put("/tasks/:id", (req, res) => {
   const id = Number(req.params.id);
-  const { title, completed } = req.body;
+  const { title, completed, priority } = req.body;
 
   const task = tasks.find((task) => task.id === id);
 
@@ -143,6 +151,10 @@ app.put("/tasks/:id", (req, res) => {
 
   if (completed !== undefined) {
     task.completed = completed;
+  }
+
+  if (priority !== undefined) {
+    task.priority = priority;
   }
 
   res.json(task);
