@@ -129,8 +129,13 @@ app.post("/tasks", (req, res) => {
     });
   }
 
+  const maxId = tasks.reduce(
+    (max, task) => Math.max(max, task.id),
+    0
+  );
+
   const newTask = {
-    id: tasks.length + 1,
+    id: maxId + 1,
     title,
     completed: false,
     priority: priority || "medium"
