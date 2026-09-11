@@ -513,9 +513,9 @@ app.delete("/tasks/:id", (req, res) => {
     });
   }
 
-  const taskExists = tasks.some((task) => task.id === id);
+  const task = tasks.find((task) => task.id === id);
 
-  if (!taskExists) {
+  if (!task) {
     return res.status(404).json({
       message: "Task not found"
     });
@@ -524,7 +524,8 @@ app.delete("/tasks/:id", (req, res) => {
   tasks = tasks.filter((task) => task.id !== id);
 
   res.json({
-    message: "Task deleted successfully"
+    message: "Task deleted successfully",
+    task
   });
 });
 
