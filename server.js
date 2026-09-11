@@ -13,6 +13,7 @@ app.use((req, res, next) => {
 const allowedPriorities = ["low", "medium", "high"];
 const MAX_TITLE_LENGTH = 100;
 const MAX_PAGE_LIMIT = 50;
+const DUE_SOON_DAYS = 3;
 
 const priorityOrder = {
   high: 1,
@@ -179,6 +180,35 @@ app.get("/tasks/overdue", (req, res) => {
     date: today,
     count: overdueTasks.length,
     tasks: overdueTasks
+  });
+});
+
+app.get("/tasks/due-soon", (req, res) => {
+  const today = new Date();
+  const todayString = today.toISOString().split("T")[0];
+
+  const futureDate = new Date(today);
+  futureDate.setUTCDate(
+    futureDate.getUTCDate() + DUE_SOON_DAYS
+  );
+
+  const futureDateString = futureDate
+    .toISOString()
+    .split("T")[0];
+
+  const dueSoonTasks = tasks.filter(
+    (task) =>
+      task.completed === false &&
+      task.dueDate &&
+      task.dueDate >= todayString &&
+      task.dueDate <= futureDateString
+  );
+
+  res.json({
+    from: todayString,
+    to: futureDateString,
+    count: dueSoonTasks.length,
+    tasks: dueSoonTasks
   });
 });
 
