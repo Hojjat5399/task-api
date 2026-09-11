@@ -444,6 +444,7 @@ app.patch("/tasks/:id/priority", (req, res) => {
   }
 
   task.priority = priority;
+  task.updatedAt = new Date().toISOString();
 
   res.json({
     message: "Task priority updated successfully",
