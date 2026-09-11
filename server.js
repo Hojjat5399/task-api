@@ -6,6 +6,11 @@ const PORT = 3000;
 app.use(express.json());
 
 const allowedPriorities = ["low", "medium", "high"];
+const priorityOrder = {
+  high: 1,
+  medium: 2,
+  low: 3
+};
 
 let tasks = [
   {
@@ -87,6 +92,12 @@ app.get("/tasks", (req, res) => {
 
   if (sort === "id") {
     result.sort((a, b) => a.id - b.id);
+  }
+
+  if (sort === "priority") {
+    result.sort(
+      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
+    );
   }
 
   const startIndex = (page - 1) * limit;
