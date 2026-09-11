@@ -36,6 +36,17 @@ app.get("/tasks/stats", (req, res) => {
   });
 });
 
+app.delete("/tasks/completed/all", (req, res) => {
+  const completedCount = tasks.filter((task) => task.completed).length;
+
+  tasks = tasks.filter((task) => !task.completed);
+
+  res.json({
+    message: "Completed tasks deleted successfully",
+    deleted: completedCount
+  });
+});
+
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
