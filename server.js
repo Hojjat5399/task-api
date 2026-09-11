@@ -26,16 +26,25 @@ app.get("/", (req, res) => {
 
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
+  const status = req.query.status;
+
+  let result = tasks;
 
   if (search) {
-    const filteredTasks = tasks.filter((task) =>
+    result = result.filter((task) =>
       task.title.toLowerCase().includes(search.toLowerCase())
     );
-
-    return res.json(filteredTasks);
   }
 
-  res.json(tasks);
+  if (status === "completed") {
+    result = result.filter((task) => task.completed === true);
+  }
+
+  if (status === "pending") {
+    result = result.filter((task) => task.completed === false);
+  }
+
+  res.json(result);
 });
 
 app.get("/tasks/:id", (req, res) => {
