@@ -411,6 +411,7 @@ app.patch("/tasks/:id/title", (req, res) => {
   }
 
   task.title = title;
+  task.updatedAt = new Date().toISOString();
 
   res.json({
     message: "Task title updated successfully",
