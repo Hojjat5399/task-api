@@ -381,6 +381,8 @@ app.put("/tasks/:id", (req, res) => {
     task.dueDate = dueDate;
   }
 
+  task.updatedAt = new Date().toISOString();
+
   res.json(task);
 });
 
