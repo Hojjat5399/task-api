@@ -5,6 +5,8 @@ const PORT = 3000;
 
 app.use(express.json());
 
+const allowedPriorities = ["low", "medium", "high"];
+
 let tasks = [
   {
     id: 1,
@@ -121,6 +123,12 @@ app.post("/tasks", (req, res) => {
     });
   }
 
+  if (priority && !allowedPriorities.includes(priority)) {
+    return res.status(400).json({
+      message: "Priority must be low, medium, or high"
+    });
+  }
+
   const newTask = {
     id: tasks.length + 1,
     title,
@@ -142,6 +150,12 @@ app.put("/tasks/:id", (req, res) => {
   if (!task) {
     return res.status(404).json({
       message: "Task not found"
+    });
+  }
+
+  if (priority && !allowedPriorities.includes(priority)) {
+    return res.status(400).json({
+      message: "Priority must be low, medium, or high"
     });
   }
 
