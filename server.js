@@ -13,6 +13,23 @@ const priorityOrder = {
   low: 3
 };
 
+const isValidDate = (date) => {
+  if (!date) {
+    return false;
+  }
+
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (!datePattern.test(date)) {
+    return false;
+  }
+
+  const parsedDate = new Date(`${date}T00:00:00.000Z`);
+
+  return !Number.isNaN(parsedDate.getTime()) &&
+    parsedDate.toISOString().startsWith(date);
+};
+
 let tasks = [
   {
     id: 1,
@@ -166,6 +183,12 @@ app.post("/tasks", (req, res) => {
     });
   }
 
+  if (dueDate && !isValidDate(dueDate)) {
+    return res.status(400).json({
+      message: "Due date must be a valid date in YYYY-MM-DD format"
+    });
+  }
+
   const maxId = tasks.reduce(
     (max, task) => Math.max(max, task.id),
     0
@@ -200,6 +223,12 @@ app.put("/tasks/:id", (req, res) => {
   if (priority && !allowedPriorities.includes(priority)) {
     return res.status(400).json({
       message: "Priority must be low, medium, or high"
+    });
+  }
+
+  if (dueDate !== undefined && dueDate !== null && !isValidDate(dueDate)) {
+    return res.status(400).json({
+      message: "Due date must be a valid date in YYYY-MM-DD format"
     });
   }
 
