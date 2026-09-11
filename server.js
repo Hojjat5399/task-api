@@ -62,10 +62,27 @@ app.get("/tasks/stats", (req, res) => {
   const completed = tasks.filter((task) => task.completed).length;
   const pending = tasks.filter((task) => !task.completed).length;
 
+  const highPriority = tasks.filter(
+    (task) => task.priority === "high"
+  ).length;
+
+  const mediumPriority = tasks.filter(
+    (task) => task.priority === "medium"
+  ).length;
+
+  const lowPriority = tasks.filter(
+    (task) => task.priority === "low"
+  ).length;
+
   res.json({
     total,
     completed,
-    pending
+    pending,
+    priorities: {
+      high: highPriority,
+      medium: mediumPriority,
+      low: lowPriority
+    }
   });
 });
 
