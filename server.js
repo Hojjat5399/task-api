@@ -12,13 +12,15 @@ let tasks = [
     id: 1,
     title: "Learn Node.js",
     completed: false,
-    priority: "high"
+    priority: "high",
+    createdAt: "2026-09-11T10:00:00.000Z"
   },
   {
     id: 2,
     title: "Build an API",
     completed: false,
-    priority: "medium"
+    priority: "medium",
+    createdAt: "2026-09-11T10:30:00.000Z"
   }
 ];
 
@@ -138,7 +140,8 @@ app.post("/tasks", (req, res) => {
     id: maxId + 1,
     title,
     completed: false,
-    priority: priority || "medium"
+    priority: priority || "medium",
+    createdAt: new Date().toISOString()
   };
 
   tasks.push(newTask);
