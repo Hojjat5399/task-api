@@ -116,6 +116,12 @@ app.get("/tasks", (req, res) => {
     );
   }
 
+  if (sort === "oldest") {
+    result.sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    );
+  }
+
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
