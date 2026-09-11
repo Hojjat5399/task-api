@@ -88,7 +88,23 @@ let tasks = [
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Task API is running"
+    message: "Task API is running",
+    endpoints: {
+      health: "GET /health",
+      version: "GET /version",
+      tasks: "GET /tasks",
+      taskById: "GET /tasks/:id",
+      createTask: "POST /tasks",
+      updateTask: "PUT /tasks/:id",
+      deleteTask: "DELETE /tasks/:id",
+      completedTasks: "GET /tasks/completed",
+      pendingTasks: "GET /tasks/pending",
+      overdueTasks: "GET /tasks/overdue",
+      dueSoonTasks: "GET /tasks/due-soon",
+      searchTasks: "GET /tasks/search?q=keyword",
+      taskStats: "GET /tasks/stats",
+      taskCount: "GET /tasks/count"
+    }
   });
 });
 
@@ -188,6 +204,7 @@ app.get("/tasks/due-soon", (req, res) => {
   const todayString = today.toISOString().split("T")[0];
 
   const futureDate = new Date(today);
+
   futureDate.setUTCDate(
     futureDate.getUTCDate() + DUE_SOON_DAYS
   );
@@ -242,7 +259,9 @@ app.get("/tasks/stats", (req, res) => {
 });
 
 app.delete("/tasks/completed/all", (req, res) => {
-  const completedCount = tasks.filter((task) => task.completed).length;
+  const completedCount = tasks.filter(
+    (task) => task.completed
+  ).length;
 
   tasks = tasks.filter((task) => !task.completed);
 
@@ -253,7 +272,9 @@ app.delete("/tasks/completed/all", (req, res) => {
 });
 
 app.patch("/tasks/complete/all", (req, res) => {
-  const pendingCount = tasks.filter((task) => !task.completed).length;
+  const pendingCount = tasks.filter(
+    (task) => !task.completed
+  ).length;
 
   tasks = tasks.map((task) => ({
     ...task,
@@ -267,7 +288,9 @@ app.patch("/tasks/complete/all", (req, res) => {
 });
 
 app.patch("/tasks/incomplete/all", (req, res) => {
-  const completedCount = tasks.filter((task) => task.completed).length;
+  const completedCount = tasks.filter(
+    (task) => task.completed
+  ).length;
 
   tasks = tasks.map((task) => ({
     ...task,
@@ -289,7 +312,10 @@ app.get("/tasks", (req, res) => {
 
   const page = Number(req.query.page) || 1;
   const requestedLimit = Number(req.query.limit) || 10;
-  const limit = Math.min(requestedLimit, MAX_PAGE_LIMIT);
+  const limit = Math.min(
+    requestedLimit,
+    MAX_PAGE_LIMIT
+  );
 
   if (!Number.isInteger(page) || page < 1) {
     return res.status(400).json({
@@ -301,32 +327,46 @@ app.get("/tasks", (req, res) => {
 
   if (search) {
     result = result.filter((task) =>
-      task.title.toLowerCase().includes(search.toLowerCase())
+      task.title
+        .toLowerCase()
+        .includes(search.toLowerCase())
     );
   }
 
   if (status === "completed") {
-    result = result.filter((task) => task.completed === true);
+    result = result.filter(
+      (task) => task.completed === true
+    );
   }
 
   if (status === "pending") {
-    result = result.filter((task) => task.completed === false);
+    result = result.filter(
+      (task) => task.completed === false
+    );
   }
 
   if (completed === "true") {
-    result = result.filter((task) => task.completed === true);
+    result = result.filter(
+      (task) => task.completed === true
+    );
   }
 
   if (completed === "false") {
-    result = result.filter((task) => task.completed === false);
+    result = result.filter(
+      (task) => task.completed === false
+    );
   }
 
   if (priority) {
-    result = result.filter((task) => task.priority === priority);
+    result = result.filter(
+      (task) => task.priority === priority
+    );
   }
 
   if (sort === "title") {
-    result.sort((a, b) => a.title.localeCompare(b.title));
+    result.sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
   }
 
   if (sort === "id") {
@@ -335,19 +375,25 @@ app.get("/tasks", (req, res) => {
 
   if (sort === "priority") {
     result.sort(
-      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
+      (a, b) =>
+        priorityOrder[a.priority] -
+        priorityOrder[b.priority]
     );
   }
 
   if (sort === "newest") {
     result.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      (a, b) =>
+        new Date(b.createdAt) -
+        new Date(a.createdAt)
     );
   }
 
   if (sort === "oldest") {
     result.sort(
-      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      (a, b) =>
+        new Date(a.createdAt) -
+        new Date(b.createdAt)
     );
   }
 
@@ -357,7 +403,10 @@ app.get("/tasks", (req, res) => {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
-  const paginatedTasks = result.slice(startIndex, endIndex);
+  const paginatedTasks = result.slice(
+    startIndex,
+    endIndex
+  );
 
   res.json({
     page,
@@ -377,7 +426,9 @@ app.get("/tasks/:id", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -394,24 +445,34 @@ app.post("/tasks", (req, res) => {
 
   if (!isValidTitle(title)) {
     return res.status(400).json({
-      message: "Title is required and must be at most 100 characters"
+      message:
+        "Title is required and must be at most 100 characters"
     });
   }
 
-  if (priority && !allowedPriorities.includes(priority)) {
+  if (
+    priority &&
+    !allowedPriorities.includes(priority)
+  ) {
     return res.status(400).json({
-      message: "Priority must be low, medium, or high"
+      message:
+        "Priority must be low, medium, or high"
     });
   }
 
-  if (dueDate && !isValidDate(dueDate)) {
+  if (
+    dueDate &&
+    !isValidDate(dueDate)
+  ) {
     return res.status(400).json({
-      message: "Due date must be a valid date in YYYY-MM-DD format"
+      message:
+        "Due date must be a valid date in YYYY-MM-DD format"
     });
   }
 
   const maxId = tasks.reduce(
-    (max, task) => Math.max(max, task.id),
+    (max, task) =>
+      Math.max(max, task.id),
     0
   );
 
@@ -441,9 +502,15 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
-  const { completed, priority, dueDate } = req.body;
+  const {
+    completed,
+    priority,
+    dueDate
+  } = req.body;
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -451,24 +518,36 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
-  if (priority && !allowedPriorities.includes(priority)) {
+  if (
+    priority &&
+    !allowedPriorities.includes(priority)
+  ) {
     return res.status(400).json({
-      message: "Priority must be low, medium, or high"
+      message:
+        "Priority must be low, medium, or high"
     });
   }
 
-  if (dueDate !== undefined && dueDate !== null && !isValidDate(dueDate)) {
+  if (
+    dueDate !== undefined &&
+    dueDate !== null &&
+    !isValidDate(dueDate)
+  ) {
     return res.status(400).json({
-      message: "Due date must be a valid date in YYYY-MM-DD format"
+      message:
+        "Due date must be a valid date in YYYY-MM-DD format"
     });
   }
 
   if (req.body.title !== undefined) {
-    const title = normalizeTitle(req.body.title);
+    const title = normalizeTitle(
+      req.body.title
+    );
 
     if (!isValidTitle(title)) {
       return res.status(400).json({
-        message: "Title is required and must be at most 100 characters"
+        message:
+          "Title is required and must be at most 100 characters"
       });
     }
 
@@ -487,14 +566,17 @@ app.put("/tasks/:id", (req, res) => {
     task.dueDate = dueDate;
   }
 
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   res.json(task);
 });
 
 app.patch("/tasks/:id/title", (req, res) => {
   const id = getTaskId(req.params.id);
-  const title = normalizeTitle(req.body.title);
+  const title = normalizeTitle(
+    req.body.title
+  );
 
   if (id === null) {
     return res.status(400).json({
@@ -502,7 +584,9 @@ app.patch("/tasks/:id/title", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -512,15 +596,18 @@ app.patch("/tasks/:id/title", (req, res) => {
 
   if (!isValidTitle(title)) {
     return res.status(400).json({
-      message: "Title is required and must be at most 100 characters"
+      message:
+        "Title is required and must be at most 100 characters"
     });
   }
 
   task.title = title;
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   res.json({
-    message: "Task title updated successfully",
+    message:
+      "Task title updated successfully",
     task
   });
 });
@@ -535,7 +622,9 @@ app.patch("/tasks/:id/priority", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -543,17 +632,23 @@ app.patch("/tasks/:id/priority", (req, res) => {
     });
   }
 
-  if (!priority || !allowedPriorities.includes(priority)) {
+  if (
+    !priority ||
+    !allowedPriorities.includes(priority)
+  ) {
     return res.status(400).json({
-      message: "Priority must be low, medium, or high"
+      message:
+        "Priority must be low, medium, or high"
     });
   }
 
   task.priority = priority;
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   res.json({
-    message: "Task priority updated successfully",
+    message:
+      "Task priority updated successfully",
     task
   });
 });
@@ -567,7 +662,9 @@ app.patch("/tasks/:id/complete", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -576,10 +673,12 @@ app.patch("/tasks/:id/complete", (req, res) => {
   }
 
   task.completed = true;
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   res.json({
-    message: "Task completed successfully",
+    message:
+      "Task completed successfully",
     task
   });
 });
@@ -593,7 +692,9 @@ app.patch("/tasks/:id/incomplete", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -602,10 +703,12 @@ app.patch("/tasks/:id/incomplete", (req, res) => {
   }
 
   task.completed = false;
-  task.updatedAt = new Date().toISOString();
+  task.updatedAt =
+    new Date().toISOString();
 
   res.json({
-    message: "Task marked as incomplete",
+    message:
+      "Task marked as incomplete",
     task
   });
 });
@@ -619,7 +722,9 @@ app.delete("/tasks/:id", (req, res) => {
     });
   }
 
-  const task = tasks.find((task) => task.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
   if (!task) {
     return res.status(404).json({
@@ -627,14 +732,19 @@ app.delete("/tasks/:id", (req, res) => {
     });
   }
 
-  tasks = tasks.filter((task) => task.id !== id);
+  tasks = tasks.filter(
+    (task) => task.id !== id
+  );
 
   res.json({
-    message: "Task deleted successfully",
+    message:
+      "Task deleted successfully",
     task
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(
+    `Server is running on http://localhost:${PORT}`
+  );
 });
