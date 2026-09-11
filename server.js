@@ -496,6 +496,7 @@ app.patch("/tasks/:id/incomplete", (req, res) => {
   }
 
   task.completed = false;
+  task.updatedAt = new Date().toISOString();
 
   res.json({
     message: "Task marked as incomplete",
