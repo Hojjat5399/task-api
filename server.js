@@ -80,6 +80,20 @@ app.delete("/tasks/completed/all", (req, res) => {
   });
 });
 
+app.patch("/tasks/complete/all", (req, res) => {
+  const pendingCount = tasks.filter((task) => !task.completed).length;
+
+  tasks = tasks.map((task) => ({
+    ...task,
+    completed: true
+  }));
+
+  res.json({
+    message: "All tasks completed successfully",
+    updated: pendingCount
+  });
+});
+
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
