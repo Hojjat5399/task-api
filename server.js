@@ -26,8 +26,10 @@ const isValidDate = (date) => {
 
   const parsedDate = new Date(`${date}T00:00:00.000Z`);
 
-  return !Number.isNaN(parsedDate.getTime()) &&
-    parsedDate.toISOString().startsWith(date);
+  return (
+    !Number.isNaN(parsedDate.getTime()) &&
+    parsedDate.toISOString().startsWith(date)
+  );
 };
 
 let tasks = [
@@ -273,6 +275,32 @@ app.patch("/tasks/:id/title", (req, res) => {
 
   res.json({
     message: "Task title updated successfully",
+    task
+  });
+});
+
+app.patch("/tasks/:id/priority", (req, res) => {
+  const id = Number(req.params.id);
+  const { priority } = req.body;
+
+  const task = tasks.find((task) => task.id === id);
+
+  if (!task) {
+    return res.status(404).json({
+      message: "Task not found"
+    });
+  }
+
+  if (!priority || !allowedPriorities.includes(priority)) {
+    return res.status(400).json({
+      message: "Priority must be low, medium, or high"
+    });
+  }
+
+  task.priority = priority;
+
+  res.json({
+    message: "Task priority updated successfully",
     task
   });
 });
