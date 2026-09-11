@@ -104,6 +104,25 @@ app.patch("/tasks/:id/complete", (req, res) => {
   });
 });
 
+app.patch("/tasks/:id/incomplete", (req, res) => {
+  const id = Number(req.params.id);
+
+  const task = tasks.find((task) => task.id === id);
+
+  if (!task) {
+    return res.status(404).json({
+      message: "Task not found"
+    });
+  }
+
+  task.completed = false;
+
+  res.json({
+    message: "Task marked as incomplete",
+    task
+  });
+});
+
 app.delete("/tasks/:id", (req, res) => {
   const id = Number(req.params.id);
 
