@@ -65,6 +65,13 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/version", (req, res) => {
+  res.json({
+    name: "task-api",
+    version: "1.0.0"
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
