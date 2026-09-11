@@ -112,6 +112,17 @@ app.get("/tasks/count", (req, res) => {
   });
 });
 
+app.get("/tasks/high-priority", (req, res) => {
+  const highPriorityTasks = tasks.filter(
+    (task) => task.priority === "high"
+  );
+
+  res.json({
+    count: highPriorityTasks.length,
+    tasks: highPriorityTasks
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
