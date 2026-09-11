@@ -11,6 +11,7 @@ app.use((req, res, next) => {
 });
 
 const allowedPriorities = ["low", "medium", "high"];
+const MAX_TITLE_LENGTH = 100;
 
 const priorityOrder = {
   high: 1,
@@ -53,6 +54,13 @@ const normalizeTitle = (title) => {
   }
 
   return title.trim();
+};
+
+const isValidTitle = (title) => {
+  return (
+    title.length > 0 &&
+    title.length <= MAX_TITLE_LENGTH
+  );
 };
 
 let tasks = [
@@ -263,9 +271,9 @@ app.post("/tasks", (req, res) => {
   const { priority, dueDate } = req.body;
   const title = normalizeTitle(req.body.title);
 
-  if (!title) {
+  if (!isValidTitle(title)) {
     return res.status(400).json({
-      message: "Title is required"
+      message: "Title is required and must be at most 100 characters"
     });
   }
 
@@ -334,9 +342,9 @@ app.put("/tasks/:id", (req, res) => {
   if (req.body.title !== undefined) {
     const title = normalizeTitle(req.body.title);
 
-    if (!title) {
+    if (!isValidTitle(title)) {
       return res.status(400).json({
-        message: "Title cannot be empty"
+        message: "Title is required and must be at most 100 characters"
       });
     }
 
@@ -376,9 +384,9 @@ app.patch("/tasks/:id/title", (req, res) => {
     });
   }
 
-  if (!title) {
+  if (!isValidTitle(title)) {
     return res.status(400).json({
-      message: "Title is required"
+      message: "Title is required and must be at most 100 characters"
     });
   }
 
