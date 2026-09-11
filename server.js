@@ -47,6 +47,14 @@ const getTaskId = (value) => {
   return id;
 };
 
+const normalizeTitle = (title) => {
+  if (typeof title !== "string") {
+    return "";
+  }
+
+  return title.trim();
+};
+
 let tasks = [
   {
     id: 1,
@@ -252,7 +260,8 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 app.post("/tasks", (req, res) => {
-  const { title, priority, dueDate } = req.body;
+  const { priority, dueDate } = req.body;
+  const title = normalizeTitle(req.body.title);
 
   if (!title) {
     return res.status(400).json({
@@ -300,7 +309,7 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
-  const { title, completed, priority, dueDate } = req.body;
+  const { completed, priority, dueDate } = req.body;
 
   const task = tasks.find((task) => task.id === id);
 
@@ -322,7 +331,15 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
-  if (title !== undefined) {
+  if (req.body.title !== undefined) {
+    const title = normalizeTitle(req.body.title);
+
+    if (!title) {
+      return res.status(400).json({
+        message: "Title cannot be empty"
+      });
+    }
+
     task.title = title;
   }
 
@@ -343,7 +360,7 @@ app.put("/tasks/:id", (req, res) => {
 
 app.patch("/tasks/:id/title", (req, res) => {
   const id = getTaskId(req.params.id);
-  const { title } = req.body;
+  const title = normalizeTitle(req.body.title);
 
   if (id === null) {
     return res.status(400).json({
