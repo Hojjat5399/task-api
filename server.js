@@ -148,6 +148,32 @@ app.put("/tasks/:id", (req, res) => {
   res.json(task);
 });
 
+app.patch("/tasks/:id/title", (req, res) => {
+  const id = Number(req.params.id);
+  const { title } = req.body;
+
+  const task = tasks.find((task) => task.id === id);
+
+  if (!task) {
+    return res.status(404).json({
+      message: "Task not found"
+    });
+  }
+
+  if (!title) {
+    return res.status(400).json({
+      message: "Title is required"
+    });
+  }
+
+  task.title = title;
+
+  res.json({
+    message: "Task title updated successfully",
+    task
+  });
+});
+
 app.patch("/tasks/:id/complete", (req, res) => {
   const id = Number(req.params.id);
 
