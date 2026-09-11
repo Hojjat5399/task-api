@@ -24,6 +24,18 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/tasks/stats", (req, res) => {
+  const total = tasks.length;
+  const completed = tasks.filter((task) => task.completed).length;
+  const pending = tasks.filter((task) => !task.completed).length;
+
+  res.json({
+    total,
+    completed,
+    pending
+  });
+});
+
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
