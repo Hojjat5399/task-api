@@ -19,14 +19,16 @@ let tasks = [
     title: "Learn Node.js",
     completed: false,
     priority: "high",
-    createdAt: "2026-09-11T10:00:00.000Z"
+    createdAt: "2026-09-11T10:00:00.000Z",
+    dueDate: "2026-09-15"
   },
   {
     id: 2,
     title: "Build an API",
     completed: false,
     priority: "medium",
-    createdAt: "2026-09-11T10:30:00.000Z"
+    createdAt: "2026-09-11T10:30:00.000Z",
+    dueDate: "2026-09-20"
   }
 ];
 
@@ -150,7 +152,7 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 app.post("/tasks", (req, res) => {
-  const { title, priority } = req.body;
+  const { title, priority, dueDate } = req.body;
 
   if (!title) {
     return res.status(400).json({
@@ -174,7 +176,8 @@ app.post("/tasks", (req, res) => {
     title,
     completed: false,
     priority: priority || "medium",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    dueDate: dueDate || null
   };
 
   tasks.push(newTask);
@@ -184,7 +187,7 @@ app.post("/tasks", (req, res) => {
 
 app.put("/tasks/:id", (req, res) => {
   const id = Number(req.params.id);
-  const { title, completed, priority } = req.body;
+  const { title, completed, priority, dueDate } = req.body;
 
   const task = tasks.find((task) => task.id === id);
 
@@ -210,6 +213,10 @@ app.put("/tasks/:id", (req, res) => {
 
   if (priority !== undefined) {
     task.priority = priority;
+  }
+
+  if (dueDate !== undefined) {
+    task.dueDate = dueDate;
   }
 
   res.json(task);
