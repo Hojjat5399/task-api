@@ -470,6 +470,7 @@ app.patch("/tasks/:id/complete", (req, res) => {
   }
 
   task.completed = true;
+  task.updatedAt = new Date().toISOString();
 
   res.json({
     message: "Task completed successfully",
