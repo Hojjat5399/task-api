@@ -165,6 +165,23 @@ app.get("/tasks/search", (req, res) => {
   });
 });
 
+app.get("/tasks/overdue", (req, res) => {
+  const today = new Date().toISOString().split("T")[0];
+
+  const overdueTasks = tasks.filter(
+    (task) =>
+      task.completed === false &&
+      task.dueDate &&
+      task.dueDate < today
+  );
+
+  res.json({
+    date: today,
+    count: overdueTasks.length,
+    tasks: overdueTasks
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
