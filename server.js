@@ -94,6 +94,20 @@ app.patch("/tasks/complete/all", (req, res) => {
   });
 });
 
+app.patch("/tasks/incomplete/all", (req, res) => {
+  const completedCount = tasks.filter((task) => task.completed).length;
+
+  tasks = tasks.map((task) => ({
+    ...task,
+    completed: false
+  }));
+
+  res.json({
+    message: "All tasks marked as incomplete",
+    updated: completedCount
+  });
+});
+
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
