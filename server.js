@@ -71,6 +71,7 @@ let tasks = [
     completed: false,
     priority: "high",
     createdAt: "2026-09-11T10:00:00.000Z",
+    updatedAt: "2026-09-11T10:00:00.000Z",
     dueDate: "2026-09-15"
   },
   {
@@ -79,6 +80,7 @@ let tasks = [
     completed: false,
     priority: "medium",
     createdAt: "2026-09-11T10:30:00.000Z",
+    updatedAt: "2026-09-11T10:30:00.000Z",
     dueDate: "2026-09-20"
   }
 ];
@@ -307,12 +309,15 @@ app.post("/tasks", (req, res) => {
     0
   );
 
+  const now = new Date().toISOString();
+
   const newTask = {
     id: maxId + 1,
     title,
     completed: false,
     priority: priority || "medium",
-    createdAt: new Date().toISOString(),
+    createdAt: now,
+    updatedAt: now,
     dueDate: dueDate || null
   };
 
