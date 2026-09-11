@@ -5,6 +5,11 @@ const PORT = 3000;
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.originalUrl}`);
+  next();
+});
+
 const allowedPriorities = ["low", "medium", "high"];
 
 const priorityOrder = {
