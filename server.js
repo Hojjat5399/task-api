@@ -145,6 +145,26 @@ app.get("/tasks/pending", (req, res) => {
   });
 });
 
+app.get("/tasks/search", (req, res) => {
+  const query = normalizeTitle(req.query.q);
+
+  if (!query) {
+    return res.status(400).json({
+      message: "Search query is required"
+    });
+  }
+
+  const results = tasks.filter((task) =>
+    task.title.toLowerCase().includes(query.toLowerCase())
+  );
+
+  res.json({
+    query,
+    count: results.length,
+    tasks: results
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
