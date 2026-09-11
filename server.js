@@ -27,8 +27,9 @@ app.get("/", (req, res) => {
 app.get("/tasks", (req, res) => {
   const search = req.query.search;
   const status = req.query.status;
+  const sort = req.query.sort;
 
-  let result = tasks;
+  let result = [...tasks];
 
   if (search) {
     result = result.filter((task) =>
@@ -42,6 +43,14 @@ app.get("/tasks", (req, res) => {
 
   if (status === "pending") {
     result = result.filter((task) => task.completed === false);
+  }
+
+  if (sort === "title") {
+    result.sort((a, b) => a.title.localeCompare(b.title));
+  }
+
+  if (sort === "id") {
+    result.sort((a, b) => a.id - b.id);
   }
 
   res.json(result);
