@@ -243,6 +243,9 @@ app.get("/tasks", (req, res) => {
     );
   }
 
+  const total = result.length;
+  const totalPages = Math.ceil(total / limit);
+
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
@@ -251,7 +254,8 @@ app.get("/tasks", (req, res) => {
   res.json({
     page,
     limit,
-    total: result.length,
+    total,
+    totalPages,
     tasks: paginatedTasks
   });
 });
