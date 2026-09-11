@@ -106,6 +106,12 @@ app.get("/version", (req, res) => {
   });
 });
 
+app.get("/tasks/count", (req, res) => {
+  res.json({
+    count: tasks.length
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
