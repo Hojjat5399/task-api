@@ -123,6 +123,17 @@ app.get("/tasks/high-priority", (req, res) => {
   });
 });
 
+app.get("/tasks/completed", (req, res) => {
+  const completedTasks = tasks.filter(
+    (task) => task.completed === true
+  );
+
+  res.json({
+    count: completedTasks.length,
+    tasks: completedTasks
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
