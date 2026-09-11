@@ -37,6 +37,16 @@ const isValidDate = (date) => {
   );
 };
 
+const getTaskId = (value) => {
+  const id = Number(value);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return null;
+  }
+
+  return id;
+};
+
 let tasks = [
   {
     id: 1,
@@ -222,7 +232,13 @@ app.get("/tasks", (req, res) => {
 });
 
 app.get("/tasks/:id", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const task = tasks.find((task) => task.id === id);
 
@@ -276,7 +292,14 @@ app.post("/tasks", (req, res) => {
 });
 
 app.put("/tasks/:id", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
+
   const { title, completed, priority, dueDate } = req.body;
 
   const task = tasks.find((task) => task.id === id);
@@ -319,8 +342,14 @@ app.put("/tasks/:id", (req, res) => {
 });
 
 app.patch("/tasks/:id/title", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
   const { title } = req.body;
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const task = tasks.find((task) => task.id === id);
 
@@ -345,8 +374,14 @@ app.patch("/tasks/:id/title", (req, res) => {
 });
 
 app.patch("/tasks/:id/priority", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
   const { priority } = req.body;
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const task = tasks.find((task) => task.id === id);
 
@@ -371,7 +406,13 @@ app.patch("/tasks/:id/priority", (req, res) => {
 });
 
 app.patch("/tasks/:id/complete", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const task = tasks.find((task) => task.id === id);
 
@@ -390,7 +431,13 @@ app.patch("/tasks/:id/complete", (req, res) => {
 });
 
 app.patch("/tasks/:id/incomplete", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const task = tasks.find((task) => task.id === id);
 
@@ -409,7 +456,13 @@ app.patch("/tasks/:id/incomplete", (req, res) => {
 });
 
 app.delete("/tasks/:id", (req, res) => {
-  const id = Number(req.params.id);
+  const id = getTaskId(req.params.id);
+
+  if (id === null) {
+    return res.status(400).json({
+      message: "Task ID must be a positive integer"
+    });
+  }
 
   const taskExists = tasks.some((task) => task.id === id);
 
