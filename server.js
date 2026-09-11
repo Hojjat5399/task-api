@@ -12,6 +12,7 @@ app.use((req, res, next) => {
 
 const allowedPriorities = ["low", "medium", "high"];
 const MAX_TITLE_LENGTH = 100;
+const MAX_PAGE_LIMIT = 50;
 
 const priorityOrder = {
   high: 1,
@@ -177,8 +178,10 @@ app.get("/tasks", (req, res) => {
   const completed = req.query.completed;
   const sort = req.query.sort;
   const priority = req.query.priority;
+
   const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
+  const requestedLimit = Number(req.query.limit) || 10;
+  const limit = Math.min(requestedLimit, MAX_PAGE_LIMIT);
 
   let result = [...tasks];
 
