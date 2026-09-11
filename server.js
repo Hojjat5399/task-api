@@ -134,6 +134,17 @@ app.get("/tasks/completed", (req, res) => {
   });
 });
 
+app.get("/tasks/pending", (req, res) => {
+  const pendingTasks = tasks.filter(
+    (task) => task.completed === false
+  );
+
+  res.json({
+    count: pendingTasks.length,
+    tasks: pendingTasks
+  });
+});
+
 app.get("/tasks/stats", (req, res) => {
   const total = tasks.length;
   const completed = tasks.filter((task) => task.completed).length;
